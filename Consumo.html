@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>Calculadora Energética Pro + Carbono</title>
+
+    <style>
+        /* --- ESTILOS GENERALES (Mantenemos tu diseño limpio) --- */
+        :root {
+            --color-dark-green: #111a11;
+            --color-mid-green: #1f371f;
+            --color-light-bg: #e6e3dd;
+            --color-text-light: #ffffff;
+            --color-text-dark: #333;
+            --color-accent: #fdd835; 
+            --electric-border-color: #fdd835;
+            --color-neutral-900: oklch(0.185 0 0);
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            font-size: 18px; /* Tamaño solicitado */
+            margin: 0; padding: 0;
+            background-color: var(--color-light-bg);
+            color: var(--color-text-dark);
+            display: flex; flex-direction: column; min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        /* HEADER */
+        .main-header {
+            background-color: var(--color-dark-green);
+            position: sticky; top: 0; z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            padding: 10px 0;
+        }
+        .header-content {
+            max-width: 1200px; margin: 0 auto; padding: 0 20px;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .logo { font-size: 24px; font-weight: bold; color: #fff; display: flex; gap: 10px; align-items: center; }
+        .logo i { color: var(--color-accent); }
+        
+        /* Botón estilo Header */
+        .btn-header {
+            background-color: #8cc63f; color: #ffffff !important;
+            padding: 10px 30px; border-radius: 50px; font-weight: bold;
+            text-decoration: none; transition: all 0.3s ease; border: 2px solid #8cc63f;
+            font-size: 16px;
+        }
+        .btn-header:hover { background-color: transparent; color: #8cc63f !important; }
+        .main-nav ul { list-style: none; padding: 0; margin: 0; }
+
+        .container { max-width: 1000px; margin: 0 auto; padding: 40px 20px; flex: 1; }
+
+        /* INTRO */
+        .intro-header {
+            background-color: var(--color-dark-green); color: #fff;
+            padding: 40px; text-align: center; border-radius: 15px; margin-bottom: 40px;
+        }
+        .intro-header h1 { color: var(--color-accent); margin-bottom: 10px; }
+        .btn-comenzar {
+            background-color: var(--color-accent); color: var(--color-dark-green);
+            border: none; padding: 12px 30px; font-weight: bold; border-radius: 50px;
+            cursor: pointer; transition: transform 0.2s; font-size: 1em;
+        }
+        .btn-comenzar:hover { transform: scale(1.05); }
+
+        /* FORMULARIO */
+        .modulo-container { display: none; animation: fadeIn 0.5s ease; }
+        .modulo-container.visible { display: block; }
+
+        .form-card {
+            background: white; padding: 30px; border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 30px;
+        }
+        .form-grid {
+            display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 15px; align-items: end;
+        }
+        .input-group label { display: block; font-weight: bold; margin-bottom: 5px; font-size: 0.9em; }
+        .input-group input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 1em; }
+        
+        .btn-add {
+            background-color: var(--color-dark-green); color: white; border: none;
+            padding: 10px; border-radius: 6px; cursor: pointer; font-weight: bold; height: 46px; width: 100%;
+        }
+        .btn-add:hover { background-color: var(--color-mid-green); }
+
+        .device-list { margin-top: 20px; }
+        .device-item {
+            background: #f9f9f9; padding: 15px; border-radius: 8px;
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 10px; border-left: 4px solid var(--color-accent);
+            animation: slideIn 0.3s ease;
+        }
+        .device-info { display: flex; gap: 20px; font-size: 0.9em; flex-wrap: wrap; }
+        .device-name { font-weight: bold; min-width: 150px; }
+        
+        .btn-delete {
+            background: #ff5252; color: white; border: none; width: 30px; height: 30px;
+            border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center;
+        }
+        
+        @keyframes slideIn { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .btn-calcular-final {
+            width: 100%; padding: 15px; background: var(--color-accent); color: var(--color-dark-green);
+            border: none; font-size: 1.2em; font-weight: bold; border-radius: 8px; cursor: pointer; margin-top: 20px;
+        }
+        .btn-calcular-final:hover { filter: brightness(0.95); }
+
+        /* RESULTADOS */
+        .resultados-section {
+            display: none; background-color: var(--color-neutral-900); color: #fff;
+            padding: 50px 20px; border-radius: 20px; margin-top: 20px; text-align: center;
+        }
+        .resultados-section.visible { display: block; animation: fadeIn 0.8s; }
+
+        /* Tarjeta Eléctrica (Diseño Visual) */
+        .main-container { display: flex; flex-direction: column; align-items: center; margin-bottom: 30px; }
+        .card-container {
+            position: relative; padding: 2px; border-radius: 24px;
+            background: linear-gradient(-30deg, var(--color-accent), transparent, var(--color-accent));
+            box-shadow: 0 0 20px rgba(253, 216, 53, 0.2);
+        }
+        .canvas-container { position: relative; width: 320px; height: 480px; }
+        .electric-border-canvas { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 420px; height: 580px; pointer-events: none; }
+        .content-container { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; }
+        
+        .title { font-size: 2.5em; font-weight: 700; color: #fff; margin: 10px 0; }
+        .gha-valor { font-size: 3em; font-weight: bold; color: var(--color-accent); line-height: 1; }
+        .label-result { font-size: 0.85em; opacity: 0.8; text-transform: uppercase; letter-spacing: 1px; margin-top: 5px; }
+
+        /* Sección Fórmulas */
+        .technical-specs {
+            background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 10px; padding: 20px; margin-top: 30px; text-align: left;
+            font-family: 'Courier New', monospace; font-size: 0.9em; color: #ccc;
+            max-width: 700px; margin-left: auto; margin-right: auto;
+        }
+        .formula-box {
+            background: rgba(255,255,255,0.05); padding: 15px; border-radius: 5px;
+            margin-bottom: 15px; border-left: 3px solid var(--color-accent);
+        }
+        .formula-title { color: var(--color-accent); font-weight: bold; margin-bottom: 5px; display: block; }
+        .variable { color: #4db6ac; }
+
+        /* Gráfica y Recomendaciones */
+        .chart-wrapper { 
+            max-width: 800px; margin: 40px auto; background: rgba(255,255,255,0.05); 
+            padding: 20px; border-radius: 12px;
+        }
+
+        .recommendations-box {
+            max-width: 800px; margin: 40px auto; text-align: left;
+            background: #fff; color: #333; padding: 30px; border-radius: 12px;
+        }
+        .recommendations-box h3 { color: var(--color-dark-green); text-align: center; margin-top: 0; }
+        .recommendations-box ul { padding-left: 20px; }
+        .recommendations-box li { margin-bottom: 10px; }
+
+        .btn-volver {
+            background: transparent; border: 2px solid #fff; color: #fff; padding: 10px 30px;
+            border-radius: 50px; cursor: pointer; margin-top: 30px; font-weight: bold;
+            font-size: 16px;
+        }
+        .btn-volver:hover { background: #fff; color: #000; }
+
+        /* FOOTER MINIMALISTA */
+        .main-footer-advanced { background-color: var(--color-dark-green); color: #fff; padding: 40px 20px; margin-top: auto; text-align: center; }
+        .footer-minimal-content { display: flex; flex-direction: column; align-items: center; gap: 20px; }
+        .footer-logo { font-size: 1.5em; color: #8cc63f; }
+        .footer-logo h3 { color: #fff; margin: 10px 0; font-size: 24px; }
+        .social-links a { color: #fff; margin: 0 15px; font-size: 24px; transition: color 0.3s; }
+        .social-links a:hover { color: #8cc63f; }
+        .footer-bottom { margin-top: 30px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px; font-size: 16px; color: #b3b3b3; }
+
+        @media(max-width: 768px) {
+            .form-grid { grid-template-columns: 1fr; }
+            .canvas-container { width: 280px; height: 400px; }
+            .electric-border-canvas { width: 360px; height: 480px; }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="main-header">
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-bolt" style="color: var(--color-accent); margin-right: 10px;"></i> 
+                <span>Calculadora Pro</span>
+            </div>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="index.html" class="btn-header">Volver al Inicio</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        
+        <div class="intro-header" id="introHeader">
+            <h1>Calculadora de Consumo y Contaminantes</h1>
+            <p>Captura tu inventario de aparatos electrónicos (mínimo 10 sugeridos) para obtener el consumo exacto y las emisiones contaminantes generadas.</p>
+            <button class="btn-comenzar" onclick="mostrarModulo()">Iniciar Captura</button>
+        </div>
+
+        <div class="modulo-container" id="moduloContainer">
+            <div class="form-card">
+                <h3><i class="fas fa-plus-circle"></i> Agregar Aparato Electrónico</h3>
+                <div class="form-grid">
+                    <div class="input-group">
+                        <label>Aparato</label>
+                        <input type="text" id="devName" placeholder="Ej. Computadora, Refri...">
+                    </div>
+                    <div class="input-group">
+                        <label>Potencia (Watts)</label>
+                        <input type="number" id="devWatts" placeholder="W" min="1">
+                    </div>
+                    <div class="input-group">
+                        <label>Horas de uso (diario)</label>
+                        <input type="number" id="devHours" placeholder="h" min="0" max="24">
+                    </div>
+                    <div class="input-group">
+                        <label>Días de uso (mes)</label>
+                        <input type="number" id="devDays" placeholder="días" min="1" max="31" value="30">
+                    </div>
+                </div>
+                <div style="margin-top: 15px; text-align: right;">
+                    <button class="btn-add" onclick="agregarDispositivo()">+ Agregar a la Lista</button>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-bottom: 10px; font-weight: bold; color: #555;">
+                Aparatos capturados: <span id="contadorDispositivos" style="color: var(--color-dark-green); font-size: 1.2em;">0</span>
+                <span id="mensajeMinimo" style="font-size: 0.8em; display:block; font-weight: normal; color: #888;">(Se sugiere capturar al menos 10 aparatos para un cálculo preciso)</span>
+            </div>
+
+            <div id="listaDispositivos" class="device-list"></div>
+            
+            <button class="btn-calcular-final" onclick="calcularTotal()">Realizar Cálculo de Consumo</button>
+        </div>
+
+        <div class="resultados-section" id="resultadosSection">
+            <h2>Resultados del Cálculo</h2>
+            
+            <main class="main-container">
+                <div class="card-container">
+                    <div class="canvas-container">
+                        <canvas id="electric-border-canvas" class="electric-border-canvas" width="400" height="550"></canvas>
+                    </div>
+                    <div class="content-container">
+                        <span class="label-result">Costo Mensual Estimado</span>
+                        <div class="title" id="resCosto">$0.00</div>
+                        
+                        <hr style="width: 60%; border-color: rgba(255,255,255,0.2); margin: 15px 0;">
+                        
+                        <div class="gha-valor" id="resKwh">0</div>
+                        <span class="label-result">Consumo (kWh)</span>
+                        
+                        <hr style="width: 60%; border-color: rgba(255,255,255,0.2); margin: 15px 0;">
+
+                        <div class="gha-valor" id="resCarbono" style="color: #ff7043; font-size: 2.2em;">0</div>
+                        <span class="label-result">Contaminantes (kg CO₂e)</span>
+                        <p style="font-size: 0.7em; opacity: 0.7; max-width: 250px;">Dióxido de Carbono equivalente liberado a la atmósfera.</p>
+                    </div>
+                </div>
+            </main>
+
+            <div class="technical-specs">
+                <h4 style="color:#fff; margin-top:0; border-bottom:1px solid #555; padding-bottom:10px;">
+                    <i class="fas fa-calculator"></i> Fórmulas de Cálculo
+                </h4>
+                
+                <div class="formula-box">
+                    <span class="formula-title">Consumo Eléctrico (kWh)</span>
+                    <code>E = (<span class="variable">Watts</span> × <span class="variable">Horas</span> × <span class="variable">Días</span>) / 1000</code>
+                </div>
+
+                <div class="formula-box">
+                    <span class="formula-title">Emisión de Contaminantes (CO₂e)</span>
+                    <code>Emisión = <span class="variable">kWh</span> × <span class="variable">0.45 kg CO₂/kWh</span></code>
+                    <div style="font-size: 0.8em; margin-top: 5px; opacity: 0.7;">
+                        *Factor de emisión estándar del sector eléctrico.
+                    </div>
+                </div>
+            </div>
+
+            <div class="chart-wrapper">
+                <h3 style="color: var(--color-accent);">Contaminantes por Componente</h3>
+                <p style="font-size: 0.9em; margin-bottom: 20px;">Desglose de kg de CO₂ producidos por cada aparato capturado:</p>
+                <canvas id="pollutantChart"></canvas>
+            </div>
+
+            <div class="recommendations-box">
+                <h3><i class="fas fa-lightbulb"></i> Recomendaciones para Evitar Contaminación</h3>
+                <ul id="listaRecomendaciones">
+                    </ul>
+            </div>
+
+            <button class="btn-volver" onclick="resetear()">Realizar Nuevo Cálculo</button>
+        </div>
+
+    </div>
+
+    <footer class="main-footer-advanced">
+        <div class="footer-minimal-content">
+            <div class="footer-logo">
+                <i class="fas fa-leaf" style="font-size: 40px;"></i>
+                <h3>HUELLA ECOLÓGICA</h3>
+            </div>
+            <div class="social-links">
+                <a href="#"><i class="fab fa-facebook-f"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>Todos los derechos reservados © 2025.</p>
+        </div>
+    </footer>
+
+    <script>
+        // --- LÓGICA DE CAPTURA DE DATOS ---
+        let inventario = [];
+
+        function mostrarModulo() {
+            document.getElementById('introHeader').style.display = 'none';
+            document.getElementById('moduloContainer').classList.add('visible');
+        }
+
+        function agregarDispositivo() {
+            const name = document.getElementById('devName').value;
+            const watts = parseFloat(document.getElementById('devWatts').value);
+            const hours = parseFloat(document.getElementById('devHours').value);
+            const days = parseFloat(document.getElementById('devDays').value);
+
+            if(!name || isNaN(watts) || isNaN(hours) || isNaN(days)) {
+                alert("Por favor completa todos los campos correctamente.");
+                return;
+            }
+
+            // Cálculo individual de energía
+            const kwh = (watts * hours * days) / 1000;
+            // Cálculo individual de contaminantes
+            const co2 = kwh * 0.45; 
+
+            const dispositivo = {
+                id: Date.now(),
+                name, watts, hours, days,
+                kwhTotal: kwh,
+                co2Total: co2
+            };
+
+            inventario.push(dispositivo);
+            actualizarContador();
+            renderizarLista();
+            limpiarInputs();
+        }
+
+        function limpiarInputs() {
+            document.getElementById('devName').value = '';
+            document.getElementById('devWatts').value = '';
+            document.getElementById('devHours').value = '';
+            document.getElementById('devName').focus();
+        }
+
+        function actualizarContador() {
+            const count = inventario.length;
+            const counterElem = document.getElementById('contadorDispositivos');
+            counterElem.textContent = count;
+            
+            if(count >= 10) {
+                counterElem.style.color = "#8cc63f"; // Verde si cumple la meta
+                document.getElementById('mensajeMinimo').textContent = "(¡Meta de captura alcanzada!)";
+                document.getElementById('mensajeMinimo').style.color = "#8cc63f";
+            }
+        }
+
+        function renderizarLista() {
+            const container = document.getElementById('listaDispositivos');
+            container.innerHTML = '';
+            if (inventario.length === 0) {
+                container.innerHTML = '<p style="text-align:center; color:#666;">Sin aparatos capturados.</p>';
+                return;
+            }
+            inventario.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'device-item';
+                div.innerHTML = `
+                    <div class="device-info">
+                        <span class="device-name">${item.name}</span>
+                        <span>${item.watts}W | ${item.hours}h/día</span>
+                        <span style="font-weight:bold; color:var(--color-mid-green)">${item.co2Total.toFixed(2)} kg CO₂e</span>
+                    </div>
+                    <button class="btn-delete" onclick="eliminarDispositivo(${item.id})"><i class="fas fa-trash"></i></button>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function eliminarDispositivo(id) {
+            inventario = inventario.filter(d => d.id !== id);
+            actualizarContador();
+            renderizarLista();
+        }
+
+        // --- CÁLCULO FINAL Y PRESENTACIÓN ---
+        let myChart = null;
+
+        function calcularTotal() {
+            if(inventario.length === 0) { 
+                alert("Por favor captura al menos un aparato."); return; 
+            }
+
+            let totalKwh = 0;
+            let totalCarbono = 0;
+
+            inventario.forEach(d => {
+                totalKwh += d.kwhTotal;
+                totalCarbono += d.co2Total;
+            });
+
+            // Tarifa promedio (ejemplo)
+            const tarifa = 3.50;
+            const costoTotal = totalKwh * tarifa;
+
+            // Mostrar textos
+            document.getElementById('resKwh').textContent = totalKwh.toFixed(2);
+            document.getElementById('resCosto').textContent = '$' + costoTotal.toLocaleString('en-US', {minimumFractionDigits: 2});
+            document.getElementById('resCarbono').textContent = totalCarbono.toFixed(2);
+
+            // Transición de pantalla
+            document.getElementById('moduloContainer').classList.remove('visible');
+            document.getElementById('resultadosSection').classList.add('visible');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            // Funciones visuales
+            initElectricBorder();
+            generarGraficaContaminantes();
+            generarRecomendaciones(totalKwh);
+        }
+
+        // --- GRÁFICA DE COMPONENTES (Requerimiento 4) ---
+        function generarGraficaContaminantes() {
+            const ctx = document.getElementById('pollutantChart').getContext('2d');
+            if (myChart) myChart.destroy();
+
+            // Extraer datos del inventario para la gráfica
+            const etiquetas = inventario.map(d => d.name);
+            const datosCO2 = inventario.map(d => d.co2Total);
+
+            myChart = new Chart(ctx, {
+                type: 'bar', // Gráfica de barras
+                data: {
+                    labels: etiquetas,
+                    datasets: [{
+                        label: 'Contaminantes (kg CO₂e)',
+                        data: datosCO2,
+                        backgroundColor: 'rgba(253, 216, 53, 0.7)',
+                        borderColor: '#fdd835',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    indexAxis: 'y', // Barras horizontales para leer mejor los nombres
+                    plugins: {
+                        legend: { labels: { color: '#fff' } }
+                    },
+                    scales: {
+                        x: { 
+                            ticks: { color: '#fff' }, 
+                            grid: { color: 'rgba(255,255,255,0.1)' },
+                            title: { display: true, text: 'kg de CO₂ producidos', color: '#ccc' }
+                        },
+                        y: { 
+                            ticks: { color: '#fff' } 
+                        }
+                    }
+                }
+            });
+        }
+
+        // --- RECOMENDACIONES (Requerimiento 5) ---
+        function generarRecomendaciones(kwhTotal) {
+            const lista = document.getElementById('listaRecomendaciones');
+            lista.innerHTML = '';
+
+            const tips = [
+                "Desconecta los aparatos que no utilices (consumo fantasma representa hasta el 10% de tu factura).",
+                "Sustituye focos incandescentes por tecnología LED para reducir el consumo de iluminación un 80%.",
+                "Aprovecha la luz natural siempre que sea posible para evitar encender luces innecesarias.",
+                "Si utilizas aire acondicionado, mantén los filtros limpios y úsalo a 24°C."
+            ];
+
+            // Recomendaciones dinámicas según lo capturado
+            const nombres = inventario.map(d => d.name.toLowerCase());
+            if(nombres.some(n => n.includes('refri') || n.includes('nevera'))) {
+                tips.push("Asegúrate de que el refrigerador cierre herméticamente y no introduzcas alimentos calientes.");
+            }
+            if(nombres.some(n => n.includes('pc') || n.includes('computadora') || n.includes('laptop'))) {
+                tips.push("Configura el modo de suspensión o hibernación en tus computadoras.");
+            }
+            if(kwhTotal > 200) {
+                tips.push("⚠️ Tu consumo es alto. Considera realizar una auditoría energética profesional o instalar paneles solares.");
+            }
+
+            tips.forEach(tip => {
+                const li = document.createElement('li');
+                li.textContent = tip;
+                lista.appendChild(li);
+            });
+        }
+
+        function resetear() {
+            inventario = [];
+            actualizarContador();
+            renderizarLista();
+            limpiarInputs();
+            document.getElementById('resultadosSection').classList.remove('visible');
+            document.getElementById('introHeader').style.display = 'block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // --- ANIMACIÓN DE FONDO ---
+        function initElectricBorder() {
+            const canvas = document.getElementById('electric-border-canvas');
+            const ctx = canvas.getContext('2d');
+            let time = 0;
+            function draw() {
+                if(!document.getElementById('resultadosSection').classList.contains('visible')) return;
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.strokeStyle = '#fdd835'; ctx.lineWidth = 2; ctx.lineCap = 'round';
+                time += 0.05;
+                const offset = 20; const w = canvas.width - offset*2; const h = canvas.height - offset*2;
+                ctx.beginPath();
+                for (let i = 0; i <= 100; i++) {
+                    const p = i / 100;
+                    let x, y;
+                    if(p < 0.25) { x = offset + (p/0.25)*w; y = offset; }
+                    else if (p < 0.5) { x = offset + w; y = offset + ((p-0.25)/0.25)*h; }
+                    else if (p < 0.75) { x = offset + w - ((p-0.5)/0.25)*w; y = offset + h; }
+                    else { x = offset; y = offset + h - ((p-0.75)/0.25)*h; }
+                    const n = Math.sin(p*20+time)*3 + Math.cos(p*50-time)*2;
+                    if(i===0) ctx.moveTo(x+n, y+n); else ctx.lineTo(x+n, y+n);
+                }
+                ctx.closePath(); ctx.stroke();
+                requestAnimationFrame(draw);
+            }
+            draw();
+        }
+    </script>
+</body>
+</html>

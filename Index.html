@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Huella Ecológica - Impacto Real</title>
+    <link rel="stylesheet" href="../CSS/estilos.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <style>
+        /* 1. Estandarización de Tipografía y Alineación Global */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Fuente moderna y legible */
+            font-size: 16px; /* Tamaño base unificado */
+            line-height: 1.6; /* Mejor lectura */
+            color: #333;
+        }
+
+        h1, h2, h3 {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            text-align: center; /* Títulos centrados */
+            margin-bottom: 20px;
+        }
+
+        p {
+            font-size: 1rem; /* Mantiene el tamaño base */
+            text-align: justify; /* Alineación justificada para bloques de texto ordenados */
+            margin-bottom: 15px;
+        }
+
+        /* Excepción para el texto del Hero (Portada) que se ve mejor centrado */
+        .hero-content p {
+            text-align: center;
+            font-size: 1.2rem; /* Un poco más grande solo para la intro */
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* 2. Diseño del Botón Calculadora */
+        .btn-header {
+            background-color: #8cc63f;
+            color: #ffffff !important;
+            padding: 10px 30px;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 16px; /* Mismo tamaño que el texto base */
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(140, 198, 63, 0.3);
+            border: 2px solid #8cc63f;
+            display: inline-block;
+        }
+
+        .btn-header:hover {
+            background-color: transparent;
+            color: #8cc63f !important;
+            transform: translateY(-2px);
+        }
+
+        .main-nav ul {
+            align-items: center;
+        }
+
+        /* 3. Ajuste del Footer Minimalista */
+        .footer-minimal {
+            background-color: #111a11; /* Mismo verde oscuro que tenías */
+            color: #ffffff;
+            padding: 40px 20px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .footer-minimal p {
+            text-align: center; /* Texto del footer centrado */
+            color: #b3b3b3;
+        }
+
+        .social-links a {
+            color: #ffffff;
+            margin: 0 10px;
+            font-size: 1.5rem;
+            transition: color 0.3s;
+        }
+        
+        .social-links a:hover {
+            color: #8cc63f;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="main-header">
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-leaf"></i> Huella Ecológica
+            </div>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="Calculadora.html" class="btn-header">Calculadora</a></li>
+                </ul>
+            </nav>
+        </div>
+
+        <div class="hero-content">
+            <h1>Impacto real, huella visible</h1>
+            <p>Utiliza nuestra herramienta precisa para cuantificar tu impacto ambiental. Descubre de forma clara y sencilla qué áreas de tu vida tienen mayor huella y recibe los datos que necesitas para empezar un cambio real y significativo.</p>
+
+            <div class="hero-image-container">
+                <img src="../Images/IMG_INICIO.avif" alt="Paisaje natural y verde" width="900" height="450">
+            </div>
+        </div>
+    </header>
+
+    <section id="faq" class="faq-section">
+        <h2>Resuelve tus dudas ecológicas</h2>
+        <div class="faq-content">
+            <p>Descubre cómo otras personas han transformado sus hábitos para reducir su impacto ambiental. Cada caso muestra decisiones cotidianas, desafíos y logros, con resultados claros y aprendizajes valiosos para todos.</p>
+            <p>Exploramos desde pequeños ajustes en el consumo hasta cambios en la movilidad y la alimentación. Queremos que te sientas acompañado en este camino y encuentres ideas prácticas para aplicar en tu día a día.</p>
+            <p>Cada historia es una invitación a reflexionar y a sumarte a una comunidad comprometida con el planeta. ¡Inspírate, aprende y comparte tu propio recorrido hacia una vida más sostenible!</p>
+        </div>
+    </section>
+
+    <section id="acciones" class="stories-section">
+        <h2>El poder de las pequeñas acciones: Disminuye tu Huella</h2>
+
+        <div class="stories-grid">
+
+            <div class="story-card action-card-large">
+                <p><strong>Elige un día sin carne:</strong> Reduce significativamente tu huella de carbono personal. El impacto de la ganadería es uno de los mayores contribuyentes a las emisiones globales.</p>
+                <div class="action-stat">
+                    <p class="stat-value"><strong>- 8%</strong></p>
+                    <p class="stat-label">de huella de carbono anual</p>
+                    <div class="action-image">
+                        <img src="../Images/planta.jpg" alt="Icono planta" width="80" height="80">
+                    </div>
+                </div>
+            </div>
+
+            <div class="story-card action-card-small">
+                <p><strong>Cambia 10km de coche por bici o transporte público:</strong> El transporte sostenible es crucial. Esta acción reduce la contaminación en áreas urbanas.</p>
+                <div class="action-stat">
+                    <p class="stat-value"><strong>- 1.5 kg</strong></p>
+                    <p class="stat-label">de CO₂ por viaje</p>
+                    <div class="action-image">
+                        <img src="../Images/vici.jpg" alt="Icono bici" width="80" height="80">
+                    </div>
+                </div>
+            </div>
+
+            <div class="story-card action-card-small">
+                <p><strong>Desconecta aparatos en stand-by:</strong> El consumo "fantasma" de electricidad es innecesario. Utiliza regletas con interruptor.</p>
+                <div class="action-stat">
+                    <p class="stat-value"><strong>- 5 a 10%</strong></p>
+                    <p class="stat-label">de consumo eléctrico mensual</p>
+                    <div class="action-image">
+                        <img src="../Images/interruptor.jpg" alt="Icono interruptor" width="80" height="80">
+                    </div>
+                </div>
+            </div>
+
+            <div class="story-card action-card-large">
+                <p><strong>Usa botellas y bolsas reutilizables:</strong> Disminuye drásticamente tu dependencia del plástico de un solo uso, uno de los mayores contaminantes de océanos y suelos.</p>
+                <div class="action-stat">
+                    <p class="stat-value"><strong>- 150 kg</strong></p>
+                    <p class="stat-label">de plástico al año</p>
+                    <div class="action-image">
+                        <img src="../Images/reciclaje.jpeg" alt="Icono reciclaje" width="80" height="80">
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <footer class="footer-minimal">
+        <div class="footer-logo">
+            <i class="fas fa-leaf" style="color: #8cc63f; font-size: 2em; margin-bottom: 10px;"></i>
+            <h3 style="margin: 0; font-size: 1.2rem;">HUELLA ECOLÓGICA</h3>
+        </div>
+        
+        <div class="social-links">
+            <a href="#"><i class="fab fa-facebook-f"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-linkedin-in"></i></a>
+        </div>
+
+        <div>
+            <p>Consulta nuestra política de privacidad.</p>
+            <p>Todos los derechos reservados © 2025.</p>
+        </div>
+    </footer>
+
+</body>
+</html>
